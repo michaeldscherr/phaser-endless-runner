@@ -33,7 +33,7 @@
             this.spacebar.onDown.add(this.checkDoubleJump, this);
         },
         addAnimations() {
-            this.player.animations.add('run', [0, 1, 2], 10, true);
+            this.player.animations.add('dash', [0, 1, 2], 10, true);
         },
         create() {
             // physics
@@ -57,7 +57,7 @@
         update() {
             cursors = game.input.keyboard.createCursorKeys();
             // animation
-            this.player.animations.play('run');
+            this.player.animations.play('dash');
             // jumping
             if (this.player.body.onFloor()) {
                 this.jumpCount = 0;
