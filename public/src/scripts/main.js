@@ -1,7 +1,8 @@
 (function(Phaser, _) {
 
-    let game = new Phaser.Game(1000, 350, Phaser.CANVAS);
+    let game = new Phaser.Game(window.innerWidth, 350, Phaser.CANVAS);
     let cursors = null;
+    let bgParallax = {};
 
     const rootDir = '.';
     const assetsDir = rootDir + '/assets';
@@ -21,12 +22,29 @@
                 this.jumpCount++;
             }
         },
+        moveBGParallax() {
+            bgParallax.sky.tilePosition.x -= 1;
+            bgParallax.clouds.tilePosition.x -= 2;
+            bgParallax.hills.tilePosition.x -= 4;
+        },
         preload() {
             this.load.spritesheet(
                 'player',
                 assetsDir + '/players/nimble-boy/nimble-boy.png',
                 69,
                 70
+            );
+            this.load.image(
+                'hills',
+                assetsDir + '/background/simple-hills/hills.png'
+            );
+            this.load.image(
+                'sky',
+                assetsDir + '/background/simple-hills/sky.png'
+            );
+            this.load.image(
+                'clouds',
+                assetsDir + '/background/simple-hills/clouds.png'
             );
         },
         addEventBindings() {
@@ -39,7 +57,11 @@
             // physics
             this.physics.startSystem(Phaser.Physics.Arcade);
             // stage
-            this.stage.backgroundColor = '#8F9E6F';
+            this.stage.backgroundColor = '#A5D3EE';
+            // background parallax elements
+            bgParallax.sky = game.add.tileSprite(0, 0, this.world.width, this.world.height, 'sky');
+            bgParallax.clouds = game.add.tileSprite(0, 0, this.world.width, this.world.height, 'clouds');
+            bgParallax.hills = game.add.tileSprite(0, 0, this.world.width, this.world.height, 'hills');
             // player
             this.player = this.add.sprite(32, 50, 'player');
             this.physics.arcade.enable(this.player);
@@ -58,6 +80,8 @@
             cursors = game.input.keyboard.createCursorKeys();
             // animation
             this.player.animations.play('dash');
+            // parallax
+            this.moveBGParallax();
             // jumping
             if (this.player.body.onFloor()) {
                 this.jumpCount = 0;
