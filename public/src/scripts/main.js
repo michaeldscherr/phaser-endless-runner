@@ -8,8 +8,21 @@
     const assetsDir = rootDir + '/assets';
     const srcDir = rootDir + '/src';
 
+    const Coin = function(x, y, speed) {
+        Phaser.Sprite.call(this, game, x, y, 'coins');
+        game.physics.enable(this, Phaser.Physics.ARCADE);
+    };
+
+    Coin.prototype = Object.create(Phaser.Sprite.prototype);
+    Coin.prototype.constructor = Coin;
+
+    Coin.prototype.update = function() {
+
+    };
+
     const EndlessRunner = function() {
         this.player = null;
+        this.coinGroup = null;
     };
 
     EndlessRunner.prototype = {
@@ -46,12 +59,23 @@
                 'clouds',
                 assetsDir + '/background/simple-hills/clouds.png'
             );
+            this.load.spritesheet(
+                'coins',
+                assetsDir + '/items/coins.png',
+                366,
+                250
+            );
         },
         addEventBindings() {
             this.spacebar.onDown.add(this.checkDoubleJump, this);
         },
         addAnimations() {
             this.player.animations.add('dash', [0, 1, 2], 10, true);
+        },
+        addCoin() {
+            let coin = new Coin();
+            game.add.existing(coin);
+            this.coinGroup.add(coin);
         },
         create() {
             // physics
@@ -68,6 +92,9 @@
             this.player.body.collideWorldBounds = true;
             this.player.body.bounce.y = 0.2;
             this.player.body.gravity.y = 1000;
+            // coins
+            this.coinGroup = this.add.group();
+            this.addCoin();
             // jumping
             this.jumpMax = 2;
             this.jumpCount = 0;
